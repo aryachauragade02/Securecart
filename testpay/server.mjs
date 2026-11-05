@@ -13,14 +13,15 @@ import crypto from 'node:crypto'
 import http from 'node:http'
 
 const PORT = Number(process.env.PORT ?? 4000)
-const PUBLIC_URL = (process.env.TESTPAY_PUBLIC_URL ?? `http://localhost:${PORT}`).replace(/\/$/, '')
+const RENDER_URL = process.env.RENDER_EXTERNAL_HOSTNAME ? `https://${process.env.RENDER_EXTERNAL_HOSTNAME}` : undefined
+const PUBLIC_URL = (process.env.TESTPAY_PUBLIC_URL || RENDER_URL || `http://localhost:${PORT}`).replace(/\/$/, '')
 const SECRET_KEY = process.env.TESTPAY_SECRET_KEY
 const WEBHOOK_SECRET = process.env.TESTPAY_WEBHOOK_SECRET
-const WEBHOOK_URL = process.env.STORE_WEBHOOK_URL
-const STORE_ORIGIN = (process.env.STORE_ORIGIN ?? 'http://localhost:3000').replace(/\/$/, '')
+const STORE_ORIGIN = (process.env.STORE_ORIGIN || 'http://localhost:3000').replace(/\/$/, '')
+const WEBHOOK_URL = process.env.STORE_WEBHOOK_URL || `${STORE_ORIGIN}/api/webhooks/testpay`
 
 if (!SECRET_KEY || !WEBHOOK_SECRET || !WEBHOOK_URL) {
-  console.error('TESTPAY_SECRET_KEY, TESTPAY_WEBHOOK_SECRET and STORE_WEBHOOK_URL must be set')
+  console.error('TESTPAY_SECRET_KEY and TESTPAY_WEBHOOK_SECRET must be set')
   process.exit(1)
 }
 

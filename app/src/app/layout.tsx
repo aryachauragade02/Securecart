@@ -37,8 +37,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {env.demoMode && (
           <div className="demo-strip">
             <div className="wrap">
-              <span>Demo store. Payments use the TestPay sandbox; no real money is taken.</span>
-              <span><Link href="/dev/mailbox">Demo mailbox</Link></span>
+              {env.publicDemo ? (
+                <span>Live demo. Create an account and pay with test card 4242 4242 4242 4242; no real money is taken.</span>
+              ) : (
+                <>
+                  <span>Demo store. Payments use the TestPay sandbox; no real money is taken.</span>
+                  <span><Link href="/dev/mailbox">Demo mailbox</Link></span>
+                </>
+              )}
             </div>
           </div>
         )}

@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { api, errorMessage } from '@/lib/client-api'
 
-export default function ForgotForm({ demo }: { demo: boolean }) {
+export default function ForgotForm({ demo, publicDemo = false }: { demo: boolean; publicDemo?: boolean }) {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -21,7 +21,7 @@ export default function ForgotForm({ demo }: { demo: boolean }) {
     }
   }
   if (message) {
-    return <div className="stack"><p className="notice notice-ok">{message}</p>{demo && <p className="small muted">In this demo, emails appear in the <a href="/dev/mailbox">demo mailbox</a>.</p>}</div>
+    return <div className="stack"><p className="notice notice-ok">{message}</p>{demo && <p className="small muted">In this demo, emails appear in the <a href="/dev/mailbox">demo mailbox</a>.</p>}{publicDemo && <p className="small muted">This public demo does not send emails, so the link is not delivered. The reset link is still created, single-use and valid for 30 minutes, as it would be in production.</p>}</div>
   }
   return (
     <form onSubmit={submit} className="stack-lg" noValidate>

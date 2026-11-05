@@ -7,7 +7,7 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
     method,
     headers: { Authorization: `Bearer ${requireSecret(env.testpay.secretKey, 'TESTPAY_SECRET_KEY')}`, 'Content-Type': 'application/json' },
     body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(8000),
+    signal: AbortSignal.timeout(Number(process.env.TESTPAY_TIMEOUT_MS ?? 8000)),
   })
   if (!res.ok) throw new Error(`TestPay ${method} ${path} failed with ${res.status}`)
   return res.json() as Promise<T>

@@ -99,6 +99,12 @@ for (const p of PRODUCTS) {
   )
 }
 
+// A public demo restarts often (free hosting sleeps when idle). Refill stock that visitors'
+// test purchases used up, so the shop never runs out. Prices and other edits are left alone.
+if (process.env.PUBLIC_DEMO === 'true') {
+  for (const p of PRODUCTS) await client.query('UPDATE products SET stock = $2 WHERE slug = $1 AND stock < $2', [p.slug, p.stock])
+}
+
 async function ensureUser(email, name, role, password) {
   const exists = await client.query('SELECT 1 FROM users WHERE email = $1', [email])
   if (exists.rowCount) return false

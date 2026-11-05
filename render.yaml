@@ -1,0 +1,57 @@
+# Render Blueprint: deploys the public demo of SecureCart (store + TestPay sandbox).
+# The database is a free Neon Postgres (Render's free Postgres is deleted after 30 days).
+# Step-by-step guide: DEPLOY.md
+services:
+  - type: web
+    name: securecart-arya
+    region: singapore
+    runtime: docker
+    plan: free
+    dockerContext: ./app
+    dockerfilePath: ./app/Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL            # Neon connection string (postgresql://...?sslmode=require)
+        sync: false
+      - key: DATA_ENCRYPTION_KEY     # output of: openssl rand -base64 32
+        sync: false
+      - key: SEED_ADMIN_PASSWORD     # your own password for admin@securecart.test (keep it private)
+        sync: false
+      - key: TESTPAY_API_URL         # public URL of the testpay service, e.g. https://securecart-arya-testpay.onrender.com
+        sync: false
+      - key: TESTPAY_SECRET_KEY
+        fromService: { type: web, name: securecart-arya-testpay, envVarKey: TESTPAY_SECRET_KEY }
+      - key: TESTPAY_WEBHOOK_SECRET
+        fromService: { type: web, name: securecart-arya-testpay, envVarKey: TESTPAY_WEBHOOK_SECRET }
+      - key: DEMO_MODE
+        value: "true"
+      - key: PUBLIC_DEMO             # no demo mailbox, no shared demo accounts
+        value: "true"
+      - key: SEED_DEMO_USERS
+        value: "false"
+      - key: PAYMENT_PROVIDER
+        value: testpay
+      - key: WAKE_TESTPAY            # wake the sandbox when someone opens the store
+        value: "true"
+      - key: TESTPAY_TIMEOUT_MS      # a sleeping free instance can take ~1 minute to start
+        value: "60000"
+      - key: TRUSTED_PROXY_HOPS      # Render + Cloudflare append 2 X-Forwarded-For entries
+        value: "2"
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=384
+
+  - type: web
+    name: securecart-arya-testpay
+    region: singapore
+    runtime: docker
+    plan: free
+    dockerContext: ./testpay
+    dockerfilePath: ./testpay/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: STORE_ORIGIN            # public URL of the store, e.g. https://securecart-arya.onrender.com
+        sync: false
+      - key: TESTPAY_SECRET_KEY
+        generateValue: true
+      - key: TESTPAY_WEBHOOK_SECRET
+        generateValue: true

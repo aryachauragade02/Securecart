@@ -2,6 +2,10 @@
 
 **A security-hardened online store for cybersecurity gear, built to show secure web development end to end: phishing-resistant sign-in, least-privilege access control, tamper-proof payments and a tamper-evident audit log. It is monitored by [PulseOps](https://github.com/aryachauragade02/pulseops), which detects attacks against it.**
 
+### Live demo: **[securecart-arya.onrender.com](https://securecart-arya.onrender.com)**
+
+Register an account, add something to the cart and pay with test card `4242 4242 4242 4242` (any future expiry, any CVC). Then try opening [/admin](https://securecart-arya.onrender.com/admin) as a customer, and see the [security page](https://securecart-arya.onrender.com/security). The demo runs on free hosting, so the first visit can take about a minute to wake up.
+
 ![Store home page](docs/screenshots/home.png)
 
 The products are fictional and payments run in a sandbox, so no real money moves. The security controls are real: every one listed below is implemented in this code and covered by tests or the end-to-end checks described at the end.
@@ -35,6 +39,8 @@ You can also register a new account. **Test card:** `4242 4242 4242 4242`, any f
 **Admin access:** sign in as admin, go to **Account → Security**, set up two-step verification with an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password), sign out, and sign in again with the code. Staff pages are only available with a second factor or a passkey.
 
 To stop: `docker compose down` (add `-v` to delete the database).
+
+**Deploying your own copy:** see [DEPLOY.md](DEPLOY.md) (Render + Neon, free). The live demo runs in public demo mode: no demo mailbox and no shared accounts, because anyone on the internet can use it.
 
 ---
 
@@ -206,7 +212,7 @@ npm test                            # security unit tests
 
 ## Limitations
 
-- Demo secrets are in `docker-compose.yml` so it runs with one command. Set real values in `.env` before deploying anywhere.
+- Demo secrets are in `docker-compose.yml` so it runs with one command. The live deployment uses its own secrets (see DEPLOY.md).
 - Served over plain HTTP locally; use HTTPS in any real deployment, which turns on `Secure` cookies and `upgrade-insecure-requests` automatically.
 - Emails are written to a demo mailbox table instead of being sent.
 - This is a portfolio project, not a certified payment system.

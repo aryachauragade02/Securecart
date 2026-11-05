@@ -8,9 +8,9 @@ export const metadata: Metadata = { title: 'Demo mailbox', robots: { index: fals
 
 const LINK = /(https?:\/\/[^\s]+)/g
 
-/** Demo mode only: shows the emails the store would have sent. Disabled when DEMO_MODE is off. */
+/** Demo mode only: shows the emails the store would have sent. Disabled when DEMO_MODE is off, and in a public demo (PUBLIC_DEMO). */
 export default async function Mailbox() {
-  if (!env.demoMode) notFound()
+  if (!env.demoMode || env.publicDemo) notFound()
   const mails = await query<{ id: number; to_email: string; subject: string; body: string; created_at: Date }>(
     'SELECT * FROM mail_outbox ORDER BY id DESC LIMIT 30')
   return (
