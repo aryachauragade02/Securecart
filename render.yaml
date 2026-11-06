@@ -29,8 +29,12 @@ services:
         value: "true"
       - key: SEED_DEMO_USERS
         value: "false"
-      - key: PAYMENT_PROVIDER
-        value: testpay
+      - key: PAYMENT_PROVIDER        # "razorpay" = Razorpay test mode, "testpay" = TestPay sandbox
+        value: razorpay
+      - key: RAZORPAY_KEY_ID         # rzp_test_... from Razorpay Dashboard (Test Mode) > API Keys
+        sync: false
+      - key: RAZORPAY_KEY_SECRET     # test key secret; set it in the Render dashboard, never in this file
+        sync: false
       - key: WAKE_TESTPAY            # wake the sandbox when someone opens the store
         value: "true"
       - key: TESTPAY_TIMEOUT_MS      # a sleeping free instance can take ~1 minute to start
